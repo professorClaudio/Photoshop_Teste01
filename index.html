@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulado Photoshop CS6</title>
+    <style>
+        :root {
+            --ps-dark: #202020;
+            --ps-blue: #00c8ff;
+            --correct: #27ae60;
+            --wrong: #c0392b;
+            --bg: #f0f2f5;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        header {
+			text-align: center;
+            border-bottom: 3px solid var(--ps-blue);
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+        }
+		
+		.header {
+			background-color: var(--ps-dark);
+			color:var(--ps-blue);
+			border-radius: 12px;
+			border: 3px solid var(--ps-blue);
+		}
+		
+		.img {
+			width:70px;
+			height:70px;
+		}
+
+        h1 { color: var(--ps-blue); margin: 0; }
+
+        .question-block {
+            background: #fafafa;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .options label {
+            display: block;
+            padding: 12px;
+            margin: 8px 0;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .options label:hover { background: #f1f7ff; }
+
+        input[type="radio"] { margin-right: 10px; }
+
+        /* Estilos de Correção */
+        .correct { 
+            background-color: var(--correct) !important; 
+            color: white; 
+            border-color: #1e8449 !important;
+        }
+
+        .wrong { 
+            background-color: var(--wrong) !important; 
+            color: white; 
+            border-color: #922b21 !important;
+        }
+
+        .explanation {
+            display: none;
+            margin-top: 15px;
+            padding: 10px;
+            background: #eee;
+            border-left: 4px solid var(--ps-blue);
+            font-size: 0.9rem;
+        }
+
+        /* Botão Final */
+        #btn-finish {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            background: var(--ps-dark);
+            color: var(--ps-blue);
+            border: 3px solid var(--ps-blue);
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        #btn-finish:hover { background: #000; filter: brightness(1.2); }
+
+        #result-box {
+            display: none;
+            text-align: center;
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 8px;
+        }
+
+        .score-num { font-size: 2rem; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header class="header">
+        <h1>Certificação Photoshop CS6</h1>
+        <p>Interface, Ferramentas, Camadas e Atalhos</p>
+		<img class="img" src="photoshop-cs6-logo01.png" alt="Logotipo do photoshop">
+    </header>
+
+    <div id="quiz-area"></div>
+
+    <button id="btn-finish" onclick="processQuiz()">Finalizar e Calcular Resultado</button>
+
+    <div id="result-box"></div>
+</div>
+
+<script>
+    const questions = [
+        { q: "Qual a função da Barra de Opções no Photoshop?", options: ["Excluir camadas", "Configurações da ferramenta atual", "Salvar arquivos", "Ver histórico"], correct: 1, exp: "A Barra de Opções muda conforme a ferramenta selecionada (ex: tamanho do pincel)." },
+        { q: "Qual a resolução padrão para impressão de alta qualidade?", options: ["72 dpi", "150 dpi", "300 dpi", "600 dpi"], correct: 2, exp: "300 dpi é o padrão da indústria para garantir nitidez na impressão." },
+        { q: "Qual formato suporta transparência para web?", options: ["JPEG", "PNG", "BMP", "EPS"], correct: 1, exp: "O PNG (Portable Network Graphics) é ideal para transparência online." },
+        { q: "Atalho para a ferramenta Pincel (Brush):", options: ["P", "B", "S", "K"], correct: 1, exp: "B de Brush." },
+        { q: "O Conta-gotas com a tecla ALT pressionada seleciona:", options: ["Cor de Primeiro Plano", "Opacidade", "Cor de Plano de Fundo", "Tamanho do pincel"], correct: 2, exp: "O Alt inverte para capturar a cor secundária (Background)." },
+        { q: "Ferramenta usada para preencher áreas com cor sólida:", options: ["Degradê", "Pincel", "Balde de Tinta", "Carimbo"], correct: 2, exp: "O Balde de Tinta (Paint Bucket) preenche pixels vizinhos similares." },
+        { q: "Atalho para a ferramenta Texto:", options: ["Ctrl + T", "T", "Alt + T", "Shift + T"], correct: 1, exp: "T de Type Tool." },
+        { q: "A Ferramenta Seleção Rápida baseia-se em:", options: ["Geometria", "Contraste e cores", "Vetor", "Canais"], correct: 1, exp: "Ela detecta as bordas comparando cores e texturas." },
+        { q: "Atalho para remover saturação (Desaturate):", options: ["Ctrl + U", "Ctrl + D", "Ctrl + Shift + U", "Alt + U"], correct: 2, exp: "Ctrl+Shift+U remove todas as cores instantaneamente." },
+        { q: "Na camada 'Background', a borracha faz os pixels ficarem:", options: ["Transparentes", "Pretos", "Da cor de Plano de Fundo", "Brancos"], correct: 2, exp: "Se a camada estiver trancada como Background, ela usa a cor secundária." },
+        { q: "Vantagem principal das Camadas (Layers):", options: ["Diminuir arquivo", "Edição não-destrutiva", "Aumentar resolução", "Traduzir texto"], correct: 1, exp: "Permitem editar elementos isoladamente sem estragar o resto." },
+        { q: "Atalho para criar Nova Camada vazia (com diálogo):", options: ["Ctrl + N", "Ctrl + Shift + N", "Ctrl + J", "Alt + N"], correct: 1, exp: "Ctrl+Shift+N abre a janela de criação de camada." },
+        { q: "Atalho para a ferramenta Borracha:", options: ["B", "E", "G", "R"], correct: 1, exp: "E de Eraser." },
+        { q: "O ícone de 'Olho' no painel Layers controla a:", options: ["Opacidade", "Visibilidade", "Trava", "Mesclagem"], correct: 1, exp: "Liga ou desliga a visão daquela camada específica." },
+        { q: "Extensão nativa que preserva camadas:", options: [".JPG", ".PSD", ".PNG", ".TIFF"], correct: 1, exp: "PSD (Photoshop Document) é o formato original de trabalho." },
+        { q: "Atalhos para aumentar/diminuir tamanho do pincel:", options: ["Setas", "[ e ]", "+ e -", "1 e 2"], correct: 1, exp: "Colchetes são os atalhos universais para diâmetro de pincel." },
+        { q: "O Balde de Tinta divide o grupo de atalho (G) com:", options: ["Pincel", "Caneta", "Degradê", "Borracha"], correct: 2, exp: "Ambos são ferramentas de preenchimento (G de Gradient)." },
+        { q: "Atalho para Seleção Rápida / Varinha Mágica:", options: ["M", "L", "W", "S"], correct: 2, exp: "W de Wand (Varinha)." },
+        { q: "O que a 'Dureza' (Hardness) do pincel altera?", options: ["A transparência", "A suavidade das bordas", "A velocidade", "A cor"], correct: 1, exp: "Define se o traço é nítido ou esfumaçado." },
+        { q: "Atalho para Hue/Saturation (Matiz/Saturação):", options: ["Ctrl + B", "Ctrl + L", "Ctrl + U", "Ctrl + M"], correct: 2, exp: "Ctrl+U (U de Hue)." },
+        { q: "Modo RGB é recomendado para:", options: ["Gráficas", "Telas/Monitores", "Impressoras jato de tinta", "Plotters"], correct: 1, exp: "RGB é luz (Red, Green, Blue), usado em tudo que brilha (telas)." },
+        { q: "O que faz o comando Ctrl + J?", options: ["Justifica texto", "Deleta camada", "Duplica camada ou seleção", "Salva"], correct: 2, exp: "J de Jump (pular para uma nova camada)." },
+        { q: "Atalho para a ferramenta Conta-gotas:", options: ["C", "I", "E", "O"], correct: 1, exp: "I de Eyedropper (grafia do som)." },
+        { q: "Opacidade em 0% significa:", options: ["Totalmente sólido", "Totalmente transparente", "Preto e branco", "Bloqueado"], correct: 1, exp: "O elemento se torna invisível." },
+        { q: "Atalho Ctrl + Z no CS6 (padrão):", options: ["Desfaz múltiplas vezes", "Desfaz/Refaz a última ação", "Fecha o programa", "Limpa cache"], correct: 1, exp: "No CS6, ele alterna apenas a última ação." }
+    ];
+
+    function render() {
+        const area = document.getElementById('quiz-area');
+        questions.forEach((q, i) => {
+            const block = document.createElement('div');
+            block.className = 'question-block';
+            block.id = `block-${i}`;
+            
+            let opts = '';
+            q.options.forEach((opt, oi) => {
+                opts += `<label id="label-${i}-${oi}"><input type="radio" name="q${i}" value="${oi}"> ${opt}</label>`;
+            });
+
+            block.innerHTML = `
+                <span class="question-text">${i + 1}. ${q.q}</span>
+                <div class="options">${opts}</div>
+                <div class="explanation" id="exp-${i}"><strong>Resposta Certa: ${q.options[q.correct]}</strong><br>${q.exp}</div>
+            `;
+            area.appendChild(block);
+        });
+    }
+
+    function processQuiz() {
+        let score = 0;
+        questions.forEach((q, i) => {
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            const expBox = document.getElementById(`exp-${i}`);
+            expBox.style.display = 'block';
+
+            if (selected) {
+                const val = parseInt(selected.value);
+                if (val === q.correct) {
+                    score++;
+                    document.getElementById(`label-${i}-${val}`).classList.add('correct');
+                } else {
+                    document.getElementById(`label-${i}-${val}`).classList.add('wrong');
+                    document.getElementById(`label-${i}-${q.correct}`).classList.add('correct');
+                }
+            } else {
+                document.getElementById(`label-${i}-${q.correct}`).classList.add('correct');
+            }
+        });
+
+        const resultBox = document.getElementById('result-box');
+        const percent = ((score / questions.length) * 100).toFixed(1);
+        resultBox.style.display = 'block';
+        resultBox.style.background = score >= 15 ? '#d4edda' : '#f8d7da';
+        resultBox.innerHTML = `
+            <div class="score-num">${score} / ${questions.length}</div>
+            <p>Seu aproveitamento foi de <strong>${percent}%</strong></p>
+        `;
+
+        document.getElementById('btn-finish').disabled = true;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    window.onload = render;
+</script>
+
+</body>
+</html>
